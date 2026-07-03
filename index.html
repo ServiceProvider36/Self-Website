@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Pizza Cafe - Admin Backend</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { inter: ['Inter','sans-serif'] } } } }
+  </script>
+  <style>
+    *{font-family:'Inter',sans-serif;box-sizing:border-box}
+    body{background:#0a0a0a;margin:0}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#0a0a0a}
+    ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:#555}
+    .filter-scroll::-webkit-scrollbar{height:0;display:none}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .animate-item{animation:fadeInUp .4s ease forwards;opacity:0}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 0 15px rgba(239,68,68,.3)}50%{box-shadow:0 0 30px rgba(239,68,68,.6)}}
+    .glow-pulse{animation:pulseGlow 2s ease-in-out infinite}
+    .menu-card{transition:all .3s ease}
+    .menu-card:hover{transform:translateY(-4px);border-color:rgba(239,68,68,.3)}
+    .menu-card:hover .card-img{transform:scale(1.08)}
+    .card-img{transition:transform .5s ease}
+    .filter-btn{transition:all .2s ease}
+    .filter-btn.active{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;box-shadow:0 4px 20px rgba(239,68,68,.4)}
+    .footer-btn{transition:all .2s ease}
+    .footer-btn:active{transform:scale(.92)}
+    .veg-dot{border:2px solid #22c55e;position:relative}
+    .veg-dot::after{content:'';position:absolute;inset:3px;background:#22c55e;border-radius:50%}
+    .nonveg-dot{border:2px solid #ef4444;position:relative}
+    .nonveg-dot::after{content:'';position:absolute;inset:3px;background:#ef4444;border-radius:50%}
+    .badge-best{background:rgba(251,191,36,.15);color:#fbbf24}
+    .hero-gradient{background:linear-gradient(135deg,rgba(239,68,68,.15) 0%,transparent 50%,rgba(239,68,68,.08) 100%)}
+    .footer-glass{background:rgba(23,23,23,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .size-chip{transition:all .15s ease;cursor:pointer;user-select:none}
+    .size-chip.selected{background:linear-gradient(135deg,#dc2626,#ef4444)!important;color:#fff!important;border-color:#ef4444!important;box-shadow:0 2px 12px rgba(239,68,68,.3)}
+    .glass{background:rgba(23,23,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .admin-sidebar-btn{transition:all .2s ease}
+    .admin-sidebar-btn.active{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.05));border-color:rgba(239,68,68,.3);color:#ef4444}
+    .admin-sidebar-btn:hover{background:rgba(255,255,255,.05)}
+    .form-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;font-size:14px;color:#fff;outline:none;transition:border .2s}
+    .form-input:focus{border-color:rgba(239,68,68,.5)}
+    .form-input::placeholder{color:#525252}
+    .form-label{display:block;font-size:12px;font-weight:600;color:#a3a3a3;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+    .btn-primary{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;font-weight:600;padding:10px 20px;border-radius:12px;border:none;cursor:pointer;font-size:14px;transition:all .2s;box-shadow:0 4px 15px rgba(239,68,68,.25)}
+    .btn-primary:hover{box-shadow:0 6px 25px rgba(239,68,68,.4);transform:translateY(-1px)}
+    .btn-secondary{background:rgba(255,255,255,.05);color:#a3a3a3;font-weight:500;padding:10px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-size:14px;transition:all .2s}
+    .btn-secondary:hover{background:rgba(255,255,255,.1);color:#fff}
+    .btn-danger{background:rgba(239,68,68,.1);color:#ef4444;font-weight:500;padding:8px 16px;border-radius:10px;border:1px solid rgba(239,68,68,.2);cursor:pointer;font-size:13px;transition:all .2s}
+    .btn-danger:hover{background:rgba(239,68,68,.2)}
+    .btn-sm{padding:6px 14px;font-size:12px;border-radius:8px}
+    .admin-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;transition:all .2s}
+    .admin-card:hover{border-color:rgba(255,255,255,.1)}
+    .img-upload-zone{border:2px dashed rgba(255,255,255,.1);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+    .img-upload-zone:hover{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.03)}
+    .img-preview{width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.1)}
+    .toggle-switch{width:44px;height:24px;border-radius:12px;background:#333;position:relative;cursor:pointer;transition:background .2s}
+    .toggle-switch.on{background:#ef4444}
+    .toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+    .toggle-switch.on::after{transform:translateX(20px)}
+    .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.show{display:flex}
+    .modal-box{background:#171717;border:1px solid rgba(255,255,255,.08);border-radius:20px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative}
+    .size-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    @media(max-width:768px){
+      .admin-sidebar{display:none!important}
+      .admin-sidebar.mobile-show{display:flex!important;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.8);backdrop-filter:blur(10px)}
+      .admin-sidebar.mobile-show .sidebar-inner{display:flex!important}
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+
+<!-- ======================== PUBLIC PAGE ======================== -->
+<div id="publicPage">
+  <header class="sticky top-0 z-50 bg-neutral-950/90 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center glow-pulse">
+          <span class="iconify text-white text-xl" data-icon="lucide:heart"></span>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight leading-none" id="pubStoreName">Love Pizza <span class="text-red-500">Cafe</span></h1>
+          <p class="text-[10px] text-neutral-500 font-medium tracking-wider uppercase" id="pubStoreTagline">Fresh & Delicious</p>
+        </div>
+      </div>
+      <button onclick="openLogin()" class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 hover:bg-white/10 transition text-sm font-medium">
+        <span class="iconify text-neutral-400" data-icon="lucide:lock"></span>
+        <span class="text-neutral-300 hidden sm:inline">Login</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero-gradient border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+      <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-red-500/30 flex-shrink-0 shadow-lg shadow-red-500/10" id="pubLogoWrap">
+        <img id="pubLogoImg" src="https://picsum.photos/seed/lovepizzalogo/200/200.jpg" alt="Logo" class="w-full h-full object-cover">
+      </div>
+      <div class="text-center sm:text-left flex-1">
+        <div class="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-full px-3 py-1 mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+          <span class="text-[11px] text-red-400 font-medium">QR Menu</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-1" id="pubHeroTitle">Welcome to <span class="text-red-500">Love Pizza</span> Cafe</h2>
+        <p class="text-sm text-neutral-400 mb-3" id="pubHeroDesc">Explore our handcrafted menu — Pizza, Thali, Noodles, Burgers, Shakes & Desserts</p>
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-neutral-500">
+          <span class="flex items-center gap-1"><span class="iconify text-yellow-500" data-icon="lucide:star"></span> <span id="pubRating">4.5</span> Rating</span>
+          <span class="w-1 h-1 rounded-full bg-neutral-700"></span>
+          <span class="flex items-center gap-1"><span class="iconify" data-icon="lucide:map-pin"></span> <span id="pubCity">Your City</span></span>
+          <span class="w-1 h-1 rounded-full bg-neutral-700"></span>
+          <span class="flex items-center gap-1"><span class="iconify" data-icon="lucide:truck"></span> Dine-In & Takeaway</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sticky top-[57px] z-40 bg-neutral-950/95 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="filter-scroll flex items-center gap-2 py-3 overflow-x-auto" id="filterContainer"></div>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6" id="menuMain">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h3 class="text-lg font-semibold" id="filterLabel">All Items</h3>
+        <p class="text-xs text-neutral-500" id="itemCount">0 items</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="setView('grid')" id="gridBtn" class="w-8 h-8 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-white">
+          <span class="iconify text-sm" data-icon="lucide:layout-grid"></span>
+        </button>
+        <button onclick="setView('list')" id="listBtn" class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-neutral-500 hover:text-white transition">
+          <span class="iconify text-sm" data-icon="lucide:list"></span>
+        </button>
+      </div>
+    </div>
+    <div id="menuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    <div id="emptyState" class="hidden text-center py-16">
+      <span class="iconify text-5xl text-neutral-700 mx-auto mb-4" data-icon="lucide:utensils-crossed"></span>
+      <p class="text-neutral-500 text-sm">No items found in this category</p>
+    </div>
+  </main>
+
+  <footer class="fixed bottom-0 left-0 right-0 z-50 footer-glass border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-around">
+      <button onclick="pubAction('call')" class="footer-btn flex flex-col items-center gap-1 group">
+        <div class="w-11 h-11 rounded-2xl bg-green-500/15 border border-green-500/20 flex items-center justify-center group-hover:bg-green-500/25 transition">
+          <span class="iconify text-green-400 text-xl" data-icon="lucide:phone"></span>
+        </div>
+        <span class="text-[10px] font-medium text-neutral-400 group-hover:text-green-400 transition">Call</span>
+      </button>
+      <button onclick="pubAction('nav')" class="footer-btn flex flex-col items-center gap-1 group">
+        <div class="w-11 h-11 rounded-2xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/25 transition">
+          <span class="iconify text-blue-400 text-xl" data-icon="lucide:navigation"></span>
+        </div>
+        <span class="text-[10px] font-medium text-neutral-400 group-hover:text-blue-400 transition">Navigate</span>
+      </button>
+      <button onclick="pubAction('insta')" class="footer-btn flex flex-col items-center gap-1 group">
+        <div class="w-11 h-11 rounded-2xl bg-pink-500/15 border border-pink-500/20 flex items-center justify-center group-hover:bg-pink-500/25 transition">
+          <span class="iconify text-pink-400 text-xl" data-icon="mdi:instagram"></span>
+        </div>
+        <span class="text-[10px] font-medium text-neutral-400 group-hover:text-pink-400 transition">Instagram</span>
+      </button>
+      <button onclick="pubAction('review')" class="footer-btn flex flex-col items-center gap-1 group">
+        <div class="w-11 h-11 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center group-hover:bg-yellow-500/25 transition">
+          <span class="iconify text-yellow-400 text-xl" data-icon="lucide:star"></span>
+        </div>
+        <span class="text-[10px] font-medium text-neutral-400 group-hover:text-yellow-400 transition">Review</span>
+      </button>
+    </div>
+    <div class="h-[env(safe-area-inset-bottom)]"></div>
+  </footer>
+</div>
+
+<!-- ======================== LOGIN MODAL ======================== -->
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-box max-w-sm p-6 animate-item">
+    <button onclick="closeLogin()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+      <span class="iconify text-neutral-400" data-icon="lucide:x"></span>
+    </button>
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mx-auto mb-3 glow-pulse">
+        <span class="iconify text-white text-2xl" data-icon="lucide:shield-check"></span>
+      </div>
+      <h3 class="text-xl font-bold">Admin Login</h3>
+      <p class="text-xs text-neutral-500 mt-1">Only authorized access</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="form-label">Username</label>
+        <input type="text" id="loginUser" class="form-input" placeholder="Enter username" autocomplete="off">
+      </div>
+      <div>
+        <label class="form-label">Password</label>
+        <div class="relative">
+          <input type="password" id="loginPass" class="form-input pr-10" placeholder="Enter password">
+          <button onclick="togglePassVis()" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition">
+            <span class="iconify" data-icon="lucide:eye" id="passEyeIcon"></span>
+          </button>
+        </div>
+      </div>
+      <div id="loginError" class="text-red-400 text-xs hidden">Invalid username or password</div>
+      <button onclick="doLogin()" class="btn-primary w-full py-3">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== ADMIN PAGE ======================== -->
+<div id="adminPage" class="hidden min-h-screen">
+  <header class="sticky top-0 z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleMobileSidebar()" class="md:hidden w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
+          <span class="iconify text-neutral-400" data-icon="lucide:menu"></span>
+        </button>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+          <span class="iconify text-white text-lg" data-icon="lucide:heart"></span>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold tracking-tight leading-none">Admin Panel</h1>
+          <p class="text-[10px] text-neutral-500">Love Pizza Cafe</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="goPublic()" class="btn-secondary btn-sm flex items-center gap-1.5">
+          <span class="iconify text-xs" data-icon="lucide:eye"></span> Preview
+        </button>
+        <button onclick="doLogout()" class="btn-danger btn-sm flex items-center gap-1.5">
+          <span class="iconify text-xs" data-icon="lucide:log-out"></span> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex max-w-7xl mx-auto">
+    <!-- Sidebar -->
+    <aside id="adminSidebar" class="admin-sidebar w-56 flex-shrink-0 border-r border-white/5 min-h-[calc(100vh-57px)] p-3 space-y-1 sticky top-[57px] self-start hidden md:block">
+      <div class="sidebar-inner space-y-1">
+        <button onclick="showAdminTab('store')" class="admin-sidebar-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 border border-transparent" data-tab="store">
+          <span class="iconify text-lg" data-icon="lucide:store"></span> Store Details
+        </button>
+        <button onclick="showAdminTab('items')" class="admin-sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 border border-transparent" data-tab="items">
+          <span class="iconify text-lg" data-icon="lucide:utensils-crossed"></span> Menu Items
+        </button>
+        <button onclick="showAdminTab('categories')" class="admin-sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 border border-transparent" data-tab="categories">
+          <span class="iconify text-lg" data-icon="lucide:layout-grid"></span> Categories
+        </button>
+        <button onclick="showAdminTab('settings')" class="admin-sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 border border-transparent" data-tab="settings">
+          <span class="iconify text-lg" data-icon="lucide:settings"></span> Settings
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="flex-1 p-4 sm:p-6 pb-20" id="adminContent"></div>
+  </div>
+</div>
+
+<!-- ======================== ITEM FORM MODAL ======================== -->
+<div id="itemFormModal" class="modal-overlay">
+  <div class="modal-box p-6 animate-item">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-lg font-bold" id="itemFormTitle">Add Item</h3>
+      <button onclick="closeItemForm()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+        <span class="iconify text-neutral-400" data-icon="lucide:x"></span>
+      </button>
+    </div>
+    <div class="space-y-4" id="itemFormBody"></div>
+  </div>
+</div>
+
+<!-- ======================== CATEGORY FORM MODAL ======================== -->
+<div id="catFormModal" class="modal-overlay">
+  <div class="modal-box max-w-sm p-6 animate-item">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-lg font-bold" id="catFormTitle">Add Category</h3>
+      <button onclick="closeCatForm()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+        <span class="iconify text-neutral-400" data-icon="lucide:x"></span>
+      </button>
+    </div>
+    <div class="space-y-4" id="catFormBody"></div>
+  </div>
+</div>
+
+<!-- ======================== REVIEW MODAL ======================== -->
+<div id="reviewModal" class="modal-overlay">
+  <div class="modal-box max-w-sm p-6 animate-item relative">
+    <button onclick="closeReviewModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition">
+      <span class="iconify text-neutral-400" data-icon="lucide:x"></span>
+    </button>
+    <div class="text-center mb-5">
+      <div class="w-14 h-14 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center mx-auto mb-3">
+        <span class="iconify text-yellow-400 text-2xl" data-icon="lucide:star"></span>
+      </div>
+      <h3 class="text-lg font-semibold">Rate Us</h3>
+      <p class="text-xs text-neutral-500 mt-1">Share your experience</p>
+    </div>
+    <div class="flex items-center justify-center gap-2 mb-5" id="starRating">
+      <button onclick="setRating(1)" class="star-btn text-3xl text-neutral-600 hover:text-yellow-400 transition">★</button>
+      <button onclick="setRating(2)" class="star-btn text-3xl text-neutral-600 hover:text-yellow-400 transition">★</button>
+      <button onclick="setRating(3)" class="star-btn text-3xl text-neutral-600 hover:text-yellow-400 transition">★</button>
+      <button onclick="setRating(4)" class="star-btn text-3xl text-neutral-600 hover:text-yellow-400 transition">★</button>
+      <button onclick="setRating(5)" class="star-btn text-3xl text-neutral-600 hover:text-yellow-400 transition">★</button>
+    </div>
+    <textarea id="reviewText" rows="3" placeholder="Write your review..." class="form-input resize-none mb-4"></textarea>
+    <button onclick="submitReview()" class="btn-primary w-full py-3">Submit Review</button>
+  </div>
+</div>
+
+<!-- ======================== TOAST ======================== -->
+<div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[300] glass border border-white/10 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none">
+  <span class="iconify text-green-400" data-icon="lucide:check-circle" id="toastIcon"></span>
+  <span id="toastMsg">Done</span>
+</div>
+
+<!-- ======================== CONFIRM DIALOG ======================== -->
+<div id="confirmDialog" class="modal-overlay">
+  <div class="modal-box max-w-xs p-6 animate-item text-center">
+    <div class="w-14 h-14 rounded-2xl bg-red-500/15 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+      <span class="iconify text-red-400 text-2xl" data-icon="lucide:trash-2"></span>
+    </div>
+    <h3 class="text-lg font-bold mb-1">Delete Item?</h3>
+    <p class="text-sm text-neutral-400 mb-5" id="confirmText">This action cannot be undone.</p>
+    <div class="flex gap-3">
+      <button onclick="closeConfirm()" class="btn-secondary flex-1 py-2.5">Cancel</button>
+      <button onclick="confirmAction()" class="btn-primary flex-1 py-2.5" style="background:linear-gradient(135deg,#dc2626,#b91c1c)">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+// DATA MANAGEMENT - localStorage
+// =====================================================
+const DEFAULT_MENU = [
+  {id:1,name:"Margherita Pizza",desc:"Classic mozzarella, fresh basil & tomato sauce",category:"pizza",type:"veg",best:true,img:"margheritapizza22",sizes:[{label:"Half",price:99},{label:"Full",price:149}]},
+  {id:2,name:"Paneer Tikka Pizza",desc:"Spicy paneer tikka, onion, capsicum & cheese",category:"pizza",type:"veg",best:false,img:"paneertikkapizza2",sizes:[{label:"Half",price:129},{label:"Full",price:199}]},
+  {id:3,name:"Chicken Supreme Pizza",desc:"Grilled chicken, olives, jalapeños & cheese overload",category:"pizza",type:"nonveg",best:true,img:"chickensupreme3",sizes:[{label:"Half",price:159},{label:"Full",price:249}]},
+  {id:4,name:"Farm Fresh Pizza",desc:"Mushroom, corn, pepper, onion & cheese",category:"pizza",type:"veg",best:false,img:"farmfreshpizza4",sizes:[{label:"Half",price:119},{label:"Full",price:179}]},
+  {id:5,name:"Pepperoni Pizza",desc:"Classic pepperoni slices with mozzarella cheese",category:"pizza",type:"nonveg",best:false,img:"pepperonipizza5",sizes:[{label:"Half",price:149},{label:"Full",price:229}]},
+  {id:6,name:"Cheese Burst Pizza",desc:"Double cheese stuffed crust with your choice of topping",category:"pizza",type:"veg",best:true,img:"cheeseburstpizza6",sizes:[{label:"Half",price:149},{label:"Full",price:219}]},
+  {id:7,name:"Veg Special Thali",desc:"Dal, paneer, sabzi, rice, roti, salad & sweet",category:"thali",type:"veg",best:true,img:"vegspecialthali7",sizes:[{label:"Regular",price:149},{label:"Large",price:199}]},
+  {id:8,name:"Chicken Thali",desc:"Chicken curry, dal, rice, roti, raita & salad",category:"thali",type:"nonveg",best:true,img:"chickenthali8",sizes:[{label:"Regular",price:199},{label:"Large",price:259}]},
+  {id:9,name:"Paneer Thali",desc:"Paneer butter masala, dal makhani, rice & naan",category:"thali",type:"veg",best:false,img:"paneerthalifood9",sizes:[{label:"Regular",price:179},{label:"Large",price:229}]},
+  {id:10,name:"Mutton Thali",desc:"Mutton curry, dal, rice, roti, salad & dessert",category:"thali",type:"nonveg",best:false,img:"muttonthali10",sizes:[{label:"Regular",price:259},{label:"Large",price:329}]},
+  {id:11,name:"Veg Hakka Noodles",desc:"Stir-fried noodles with vegetables & soy sauce",category:"noodles",type:"veg",best:false,img:"veghakkanoodles11",sizes:[{label:"Half",price:69},{label:"Full",price:99}]},
+  {id:12,name:"Chicken Hakka Noodles",desc:"Wok-tossed noodles with chicken & veggies",category:"noodles",type:"nonveg",best:true,img:"chickenhakkanoodles12",sizes:[{label:"Half",price:89},{label:"Full",price:129}]},
+  {id:13,name:"Paneer Chilli Noodles",desc:"Spicy paneer noodles with chilli sauce twist",category:"noodles",type:"veg",best:false,img:"paneerchillinoodles13",sizes:[{label:"Half",price:79},{label:"Full",price:119}]},
+  {id:14,name:"Schezwan Noodles",desc:"Fiery schezwan sauce noodles with veggies",category:"noodles",type:"veg",best:false,img:"schezwannoodles14",sizes:[{label:"Half",price:79},{label:"Full",price:109}]},
+  {id:15,name:"Egg Noodles",desc:"Classic egg noodles with spring onion & veggies",category:"noodles",type:"nonveg",best:false,img:"eggnoodlesfood15",sizes:[{label:"Half",price:79},{label:"Full",price:109}]},
+  {id:16,name:"Classic Veg Burger",desc:"Crispy veg patty, lettuce, cheese & mayo",category:"burger",type:"veg",best:false,img:"classicvegburger16",sizes:[{label:"Single",price:89},{label:"Double",price:139}]},
+  {id:17,name:"Chicken Zinger Burger",desc:"Spicy chicken fillet, lettuce & spicy mayo",category:"burger",type:"nonveg",best:true,img:"chickenzingerburger17",sizes:[{label:"Single",price:139},{label:"Double",price:199}]},
+  {id:18,name:"Paneer Crunch Burger",desc:"Crispy paneer patty with chipotle sauce",category:"burger",type:"veg",best:true,img:"paneercrunchburger18",sizes:[{label:"Single",price:119},{label:"Double",price:169}]},
+  {id:19,name:"Double Patty Burger",desc:"Double chicken patty with double cheese",category:"burger",type:"nonveg",best:false,img:"doublepattyburger19",sizes:[{label:"Single",price:129},{label:"Double",price:169}]},
+  {id:20,name:"Mexican Burger",desc:"Bean patty, jalapeños, salsa & cheese",category:"burger",type:"veg",best:false,img:"mexicanburgerfood20",sizes:[{label:"Single",price:109},{label:"Double",price:149}]},
+  {id:21,name:"Chocolate Shake",desc:"Rich chocolate blended with ice cream & milk",category:"shakes",type:"veg",best:true,img:"chocolateshake21",sizes:[{label:"Small",price:79},{label:"Medium",price:99},{label:"Large",price:129}]},
+  {id:22,name:"Strawberry Shake",desc:"Fresh strawberry with cream & ice cream",category:"shakes",type:"veg",best:false,img:"strawberryshake22",sizes:[{label:"Small",price:89},{label:"Medium",price:109},{label:"Large",price:139}]},
+  {id:23,name:"Oreo Shake",desc:"Crushed Oreo cookies with vanilla ice cream",category:"shakes",type:"veg",best:true,img:"oreoshake23",sizes:[{label:"Small",price:99},{label:"Medium",price:119},{label:"Large",price:149}]},
+  {id:24,name:"Mango Shake",desc:"Fresh mango pulp with chilled milk",category:"shakes",type:"veg",best:false,img:"mangoshakefruit24",sizes:[{label:"Small",price:69},{label:"Medium",price:89},{label:"Large",price:109}]},
+  {id:25,name:"Cold Coffee",desc:"Strong coffee with ice cream & chocolate drizzle",category:"shakes",type:"veg",best:false,img:"coldcoffeeshake25",sizes:[{label:"Small",price:79},{label:"Medium",price:99},{label:"Large",price:129}]},
+  {id:26,name:"Butterscotch Shake",desc:"Creamy butterscotch with caramel swirl",category:"shakes",type:"veg",best:false,img:"butterscotchshake26",sizes:[{label:"Small",price:99},{label:"Medium",price:119},{label:"Large",price:149}]},
+  {id:27,name:"Brownie with Ice Cream",desc:"Hot chocolate brownie with vanilla ice cream",category:"desserts",type:"veg",best:true,img:"brownieicecream27",sizes:[{label:"Regular",price:129},{label:"Large",price:179}]},
+  {id:28,name:"Gulab Jamun",desc:"Soft & juicy gulab jamun in sugar syrup",category:"desserts",type:"veg",best:false,img:"gulabjamundessert28",sizes:[{label:"2 Pcs",price:59},{label:"4 Pcs",price:99}]},
+  {id:29,name:"Chocolate Lava Cake",desc:"Warm cake with molten chocolate center",category:"desserts",type:"veg",best:true,img:"chocolatelavacake29",sizes:[{label:"Regular",price:139},{label:"Large",price:189}]},
+  {id:30,name:"Rasmalai",desc:"Soft paneer balls in saffron milk",category:"desserts",type:"veg",best:false,img:"rasmalaidessert30",sizes:[{label:"2 Pcs",price:79},{label:"4 Pcs",price:129}]},
+  {id:31,name:"Ice Cream Sundae",desc:"3 scoops with chocolate sauce, nuts & cherry",category:"desserts",type:"veg",best:false,img:"icecreamsundae31",sizes:[{label:"Regular",price:109},{label:"Large",price:149}]}
+];
+
+const DEFAULT_CATEGORIES = [
+  {key:"all",label:"All Items",icon:"lucide:utensils-crossed"},
+  {key:"pizza",label:"Pizza",icon:"lucide:pizza"},
+  {key:"thali",label:"Thali",icon:"lucide:soup"},
+  {key:"noodles",label:"Noodles",icon:"lucide:beef"},
+  {key:"burger",label:"Burger",icon:"lucide:beef"},
+  {key:"shakes",label:"Shakes",icon:"lucide:cup-soda"},
+  {key:"desserts",label:"Desserts",icon:"lucide:cake-slice"}
+];
+
+const DEFAULT_STORE = {
+  name: "Love Pizza Cafe",
+  tagline: "Fresh & Delicious",
+  phone: "+919999999999",
+  email: "info@lovepizzacafe.com",
+  address: "Main Market Road, Your City, India",
+  city: "Your City",
+  rating: "4.5",
+  mapLink: "https://maps.google.com/?q=Love+Pizza+Cafe",
+  instagramLink: "https://instagram.com/lovepizzacafe",
+  logoImg: "https://picsum.photos/seed/lovepizzalogo/200/200.jpg",
+  heroDesc: "Explore our handcrafted menu — Pizza, Thali, Noodles, Burgers, Shakes & Desserts"
+};
+
+function loadData(key, def) {
+  try { const d = localStorage.getItem('lpc_'+key); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+function saveData(key, val) {
+  try { localStorage.setItem('lpc_'+key, JSON.stringify(val)); } catch(e) { showToast('Storage full! Delete some items.','error'); }
+}
+
+function getStore() { return loadData('store', DEFAULT_STORE) || {...DEFAULT_STORE}; }
+function setStore(s) { saveData('store', s); }
+function getItems() { return loadData('items', DEFAULT_MENU) || JSON.parse(JSON.stringify(DEFAULT_MENU)); }
+function setItems(arr) { saveData('items', arr); }
+function getCats() { return loadData('cats', DEFAULT_CATEGORIES) || JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)); }
+function setCats(arr) { saveData('cats', arr); }
+function getCreds() { return loadData('creds', {user:'admin',pass:'lovepizza@123'}) || {user:'admin',pass:'lovepizza@123'}; }
+function setCreds(c) { saveData('creds', c); }
+
+// Seed data on first load
+if (!localStorage.getItem('lpc_items')) { setItems(DEFAULT_MENU); setCats(DEFAULT_CATEGORIES); setStore(DEFAULT_STORE); setCreds({user:'admin',pass:'lovepizza@123'}); }
+
+// =====================================================
+// STATE
+// =====================================================
+let activeFilter = "all";
+let currentView = "grid";
+let selectedRating = 0;
+let selectedSizes = {};
+let adminTab = "store";
+let editingItemId = null;
+let editingCatKey = null;
+let pendingConfirmCb = null;
+
+// =====================================================
+// TOAST
+// =====================================================
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  document.getElementById('toastMsg').textContent = msg;
+  icon.setAttribute('data-icon', type==='error' ? 'lucide:alert-circle' : 'lucide:check-circle');
+  icon.className = type==='error' ? 'iconify text-red-400' : 'iconify text-green-400';
+  t.classList.remove('opacity-0','-translate-y-4','pointer-events-none');
+  t.classList.add('opacity-100','translate-y-0');
+  setTimeout(() => { t.classList.add('opacity-0','-translate-y-4','pointer-events-none'); t.classList.remove('opacity-100','translate-y-0'); }, 2500);
+}
+
+// =====================================================
+// CONFIRM DIALOG
+// =====================================================
+function showConfirm(text, cb) {
+  document.getElementById('confirmText').textContent = text;
+  document.getElementById('confirmDialog').classList.add('show');
+  pendingConfirmCb = cb;
+}
+function closeConfirm() { document.getElementById('confirmDialog').classList.remove('show'); pendingConfirmCb = null; }
+function confirmAction() { if (pendingConfirmCb) pendingConfirmCb(); closeConfirm(); }
+
+// =====================================================
+// LOGIN / LOGOUT
+// =====================================================
+function openLogin() {
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.add('hidden');
+  setTimeout(() => document.getElementById('loginUser').focus(), 100);
+}
+function closeLogin() { document.getElementById('loginModal').classList.remove('show'); }
+
+function togglePassVis() {
+  const p = document.getElementById('loginPass');
+  const icon = document.getElementById('passEyeIcon');
+  if (p.type === 'password') { p.type = 'text'; icon.setAttribute('data-icon','lucide:eye-off'); }
+  else { p.type = 'password'; icon.setAttribute('data-icon','lucide:eye'); }
+}
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const creds = getCreds();
+  if (u === creds.user && p === creds.pass) {
+    closeLogin();
+    document.getElementById('publicPage').classList.add('hidden');
+    document.getElementById('adminPage').classList.remove('hidden');
+    showAdminTab('store');
+    showToast('Welcome, Admin!');
+  } else {
+    document.getElementById('loginError').classList.remove('hidden');
+  }
+}
+
+function doLogout() {
+  document.getElementById('adminPage').classList.add('hidden');
+  document.getElementById('publicPage').classList.remove('hidden');
+  renderPublicMenu();
+  showToast('Logged out successfully');
+}
+
+function goPublic() {
+  document.getElementById('adminPage').classList.add('hidden');
+  document.getElementById('publicPage').classList.remove('hidden');
+  renderPublicMenu();
+}
+
+// Enter key login
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('show')) doLogin();
+  if (e.key === 'Escape') {
+    closeLogin(); closeItemForm(); closeCatForm(); closeReviewModal(); closeConfirm();
+  }
+});
+
+// =====================================================
+// PUBLIC MENU RENDERING
+// =====================================================
+function renderPublicMenu() {
+  const store = getStore();
+  const items = getItems();
+  const cats = getCats();
+
+  // Update store info
+  document.getElementById('pubStoreName').innerHTML = store.name.replace(/(Pizza)/, '<span class="text-red-500">$1</span>');
+  document.getElementById('pubStoreTagline').textContent = store.tagline;
+  document.getElementById('pubLogoImg').src = store.logoImg;
+  document.getElementById('pubHeroTitle').innerHTML = `Welcome to <span class="text-red-500">${store.name}</span>`;
+  document.getElementById('pubHeroDesc').textContent = store.heroDesc;
+  document.getElementById('pubRating').textContent = store.rating;
+  document.getElementById('pubCity').textContent = store.city;
+
+  // Init sizes
+  items.forEach(item => { if (!(item.id in selectedSizes)) selectedSizes[item.id] = 0; });
+
+  renderFilters(cats, items);
+  renderMenuGrid(items, cats);
+}
+
+function renderFilters(cats, items) {
+  const c = document.getElementById("filterContainer");
+  c.innerHTML = cats.map(cat => {
+    const count = cat.key === 'all' ? items.length : items.filter(i => i.category === cat.key).length;
+    return `<button onclick="filterMenu('${cat.key}')" class="filter-btn flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap flex-shrink-0 ${activeFilter === cat.key ? 'active' : 'bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white'}">
+      <span class="iconify text-base" data-icon="${cat.icon}"></span>${cat.label}<span class="text-[10px] opacity-60">${count}</span>
+    </button>`;
+  }).join('');
+}
+
+function renderMenuGrid(items, cats) {
+  const grid = document.getElementById("menuGrid");
+  const empty = document.getElementById("emptyState");
+  const label = document.getElementById("filterLabel");
+  const count = document.getElementById("itemCount");
+  const filtered = activeFilter === "all" ? items : items.filter(i => i.category === activeFilter);
+  const catObj = cats.find(c => c.key === activeFilter);
+  label.textContent = catObj ? catObj.label : 'All Items';
+  count.textContent = `${filtered.length} items`;
+
+  if (filtered.length === 0) {
+    grid.classList.add("hidden"); empty.classList.remove("hidden"); empty.classList.add("flex","flex-col"); return;
+  }
+  grid.classList.remove("hidden"); empty.classList.add("hidden"); empty.classList.remove("flex","flex-col");
+
+  if (currentView === "grid") {
+    grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
+    grid.innerHTML = filtered.map((item, i) => {
+      const si = selectedSizes[item.id]||0; const sp = item.sizes[si].price;
+      return `<div class="menu-card bg-neutral-900 border border-white/5 rounded-2xl overflow-hidden animate-item" style="animation-delay:${i*0.05}s">
+        <div class="relative h-40 overflow-hidden bg-neutral-800">
+          <img src="${item.img}" alt="${item.name}" class="card-img w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/fallback/400/300.jpg'">
+          <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/80 via-transparent to-transparent"></div>
+          <div class="absolute top-3 left-3 flex items-center gap-1.5">
+            <span class="relative w-4 h-4 rounded-full ${item.type==='veg'?'veg-dot':'nonveg-dot'}"></span>
+            ${item.best?'<span class="badge-best text-[10px] font-semibold px-2 py-0.5 rounded-full">★ BEST</span>':''}
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm rounded-lg px-2.5 py-1"><span class="text-base font-bold text-white">₹${sp}</span></div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-semibold text-sm mb-1 text-white leading-snug">${item.name}</h4>
+          <p class="text-xs text-neutral-500 leading-relaxed line-clamp-2 mb-3">${item.desc}</p>
+          <div class="flex items-center gap-1.5 flex-wrap">${item.sizes.map((s,j)=>`<button onclick="selectSize(${item.id},${j})" class="size-chip text-xs font-medium px-3 py-1.5 rounded-lg border ${j===si?'selected':'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'}">${s.label} · ₹${s.price}</button>`).join('')}</div>
+        </div></div>`;
+    }).join('');
+  } else {
+    grid.className = "flex flex-col gap-3";
+    grid.innerHTML = filtered.map((item, i) => {
+      const si = selectedSizes[item.id]||0; const sp = item.sizes[si].price;
+      return `<div class="menu-card bg-neutral-900 border border-white/5 rounded-2xl overflow-hidden animate-item flex" style="animation-delay:${i*0.04}s">
+        <div class="relative w-28 sm:w-36 flex-shrink-0 overflow-hidden bg-neutral-800">
+          <img src="${item.img}" alt="${item.name}" class="card-img w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/fallback/300/300.jpg'">
+          <div class="absolute top-2 left-2"><span class="relative w-3.5 h-3.5 rounded-full ${item.type==='veg'?'veg-dot':'nonveg-dot'}"></span></div>
+        </div>
+        <div class="flex-1 p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <h4 class="font-semibold text-sm text-white leading-snug">${item.name}</h4>
+              ${item.best?'<span class="badge-best text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0">★ BEST</span>':''}
+            </div>
+            <p class="text-xs text-neutral-500 leading-relaxed line-clamp-1 mb-2">${item.desc}</p>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap">${item.sizes.map((s,j)=>`<button onclick="selectSize(${item.id},${j})" class="size-chip text-[11px] font-medium px-2.5 py-1 rounded-lg border ${j===si?'selected':'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'}">${s.label} · ₹${s.price}</button>`).join('')}</div>
+            <span class="text-base font-bold text-white flex-shrink-0">₹${sp}</span>
+          </div>
+        </div></div>`;
+    }).join('');
+  }
+}
+
+function selectSize(id, idx) { selectedSizes[id] = idx; renderPublicMenu(); }
+function filterMenu(key) { activeFilter = key; renderPublicMenu(); }
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridBtn').className = `w-8 h-8 rounded-lg flex items-center justify-center transition ${v==='grid'?'bg-white/10 border border-white/10 text-white':'bg-white/5 border border-white/5 text-neutral-500 hover:text-white'}`;
+  document.getElementById('listBtn').className = `w-8 h-8 rounded-lg flex items-center justify-center transition ${v==='list'?'bg-white/10 border border-white/10 text-white':'bg-white/5 border border-white/5 text-neutral-500 hover:text-white'}`;
+  renderPublicMenu();
+}
+
+function pubAction(a) {
+  const s = getStore();
+  if (a==='call') { showToast('📞 Calling...'); setTimeout(()=>{ window.location.href='tel:'+s.phone; },800); }
+  if (a==='nav') { showToast('📍 Opening Maps...'); setTimeout(()=>{ window.open(s.mapLink,'_blank'); },800); }
+  if (a==='insta') { showToast('📸 Opening Instagram...'); setTimeout(()=>{ window.open(s.instagramLink,'_blank'); },800); }
+  if (a==='review') openReviewModal();
+}
+
+// Review
+function openReviewModal() { document.getElementById('reviewModal').classList.add('show'); }
+function closeReviewModal() { document.getElementById('reviewModal').classList.remove('show'); selectedRating=0; updateStars(); document.getElementById('reviewText').value=''; }
+function setRating(r) { selectedRating=r; updateStars(); }
+function updateStars() { document.querySelectorAll('.star-btn').forEach((b,i)=>{ b.style.color = i<selectedRating?'#fbbf24':'#525252'; }); }
+function submitReview() { if(!selectedRating){showToast('⭐ Please select a rating','error');return;} closeReviewModal(); showToast(`Thank you for ${selectedRating} star review!`); }
+document.getElementById('reviewModal').addEventListener('click',function(e){if(e.target===this)closeReviewModal();});
+
+// =====================================================
+// ADMIN PANEL
+// =====================================================
+function showAdminTab(tab) {
+  adminTab = tab;
+  document.querySelectorAll('.admin-sidebar-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  const c = document.getElementById('adminContent');
+  if (tab === 'store') renderStoreTab(c);
+  else if (tab === 'items') renderItemsTab(c);
+  else if (tab === 'categories') renderCatsTab(c);
+  else if (tab === 'settings') renderSettingsTab(c);
+  // Close mobile sidebar
+  document.getElementById('adminSidebar').classList.remove('mobile-show');
+}
+
+function toggleMobileSidebar() {
+  document.getElementById('adminSidebar').classList.toggle('mobile-show');
+}
+
+// ---------- STORE DETAILS TAB ----------
+function renderStoreTab(c) {
+  const s = getStore();
+  c.innerHTML = `
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold tracking-tight">Store Details</h2>
+      <p class="text-sm text-neutral-500 mt-1">Update your cafe information</p>
+    </div>
+    <div class="admin-card space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div><label class="form-label">Store Name</label><input id="sName" class="form-input" value="${s.name}"></div>
+        <div><label class="form-label">Tagline</label><input id="sTagline" class="form-input" value="${s.tagline}"></div>
+        <div><label class="form-label">Phone Number</label><input id="sPhone" class="form-input" value="${s.phone}"></div>
+        <div><label class="form-label">Email</label><input id="sEmail" class="form-input" value="${s.email}"></div>
+        <div class="sm:col-span-2"><label class="form-label">Full Address</label><input id="sAddress" class="form-input" value="${s.address}"></div>
+        <div><label class="form-label">City</label><input id="sCity" class="form-input" value="${s.city}"></div>
+        <div><label class="form-label">Rating</label><input id="sRating" class="form-input" value="${s.rating}"></div>
+        <div class="sm:col-span-2"><label class="form-label">Google Maps Link</label><input id="sMap" class="form-input" value="${s.mapLink}"></div>
+        <div class="sm:col-span-2"><label class="form-label">Instagram Link</label><input id="sInsta" class="form-input" value="${s.instagramLink}"></div>
+        <div class="sm:col-span-2"><label class="form-label">Hero Description</label><textarea id="sHeroDesc" class="form-input resize-none" rows="2">${s.heroDesc}</textarea></div>
+      </div>
+
+      <div>
+        <label class="form-label">Logo Image</label>
+        <div class="flex items-center gap-4">
+          <img src="${s.logoImg}" class="img-preview" id="logoPreview" onerror="this.src='https://picsum.photos/seed/def/200/200.jpg'">
+          <div class="flex-1 space-y-2">
+            <input id="sLogoUrl" class="form-input text-sm" placeholder="Paste image URL..." value="${s.logoImg.startsWith('data:')?'':s.logoImg}">
+            <div class="img-upload-zone" onclick="document.getElementById('sLogoFile').click()">
+              <input type="file" id="sLogoFile" accept="image/*" class="hidden" onchange="handleStoreLogoUpload(this)">
+              <span class="iconify text-neutral-500 text-2xl mx-auto" data-icon="lucide:upload"></span>
+              <p class="text-xs text-neutral-500 mt-1">Upload image file</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveStoreDetails()" class="btn-primary">Save Store Details</button>
+    </div>`;
+}
+
+function handleStoreLogoUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  resizeImage(file, 400, function(dataUrl) {
+    document.getElementById('logoPreview').src = dataUrl;
+    document.getElementById('sLogoUrl').value = '';
+    document.getElementById('sLogoUrl').dataset.base64 = dataUrl;
+  });
+}
+
+function saveStoreDetails() {
+  const s = getStore();
+  s.name = document.getElementById('sName').value.trim() || s.name;
+  s.tagline = document.getElementById('sTagline').value.trim() || s.tagline;
+  s.phone = document.getElementById('sPhone').value.trim() || s.phone;
+  s.email = document.getElementById('sEmail').value.trim() || s.email;
+  s.address = document.getElementById('sAddress').value.trim() || s.address;
+  s.city = document.getElementById('sCity').value.trim() || s.city;
+  s.rating = document.getElementById('sRating').value.trim() || s.rating;
+  s.mapLink = document.getElementById('sMap').value.trim() || s.mapLink;
+  s.instagramLink = document.getElementById('sInsta').value.trim() || s.instagramLink;
+  s.heroDesc = document.getElementById('sHeroDesc').value.trim() || s.heroDesc;
+  const logoUrl = document.getElementById('sLogoUrl');
+  if (logoUrl.dataset.base64) { s.logoImg = logoUrl.dataset.base64; }
+  else if (logoUrl.value.trim()) { s.logoImg = logoUrl.value.trim(); }
+  setStore(s);
+  showToast('Store details saved!');
+}
+
+// ---------- ITEMS TAB ----------
+function renderItemsTab(c) {
+  const items = getItems();
+  const cats = getCats().filter(ct => ct.key !== 'all');
+  c.innerHTML = `
+    <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">Menu Items</h2>
+        <p class="text-sm text-neutral-500 mt-1">${items.length} total items</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <input id="adminItemSearch" class="form-input text-sm" style="width:200px" placeholder="Search items..." oninput="filterAdminItems(this.value)">
+        <button onclick="openItemForm()" class="btn-primary flex items-center gap-2"><span class="iconify" data-icon="lucide:plus"></span> Add Item</button>
+      </div>
+    </div>
+    <div id="adminItemsList" class="space-y-3"></div>`;
+  renderAdminItemsList(items, cats);
+}
+
+function renderAdminItemsList(items, cats) {
+  const list = document.getElementById('adminItemsList');
+  if (!list) return;
+  if (!cats) cats = getCats().filter(ct => ct.key !== 'all');
+  if (items.length === 0) {
+    list.innerHTML = '<div class="text-center py-12"><span class="iconify text-5xl text-neutral-700 mx-auto mb-3" data-icon="lucide:utensils-crossed"></span><p class="text-neutral-500 text-sm">No items yet. Add your first item!</p></div>';
+    return;
+  }
+  list.innerHTML = items.map(item => {
+    const catLabel = (cats.find(ct=>ct.key===item.category)||{}).label || item.category;
+    return `<div class="admin-card flex items-center gap-4" id="adminItem_${item.id}">
+      <div class="w-16 h-16 rounded-xl overflow-hidden bg-neutral-800 flex-shrink-0">
+        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/fb/120/120.jpg'">
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="relative w-3 h-3 rounded-full flex-shrink-0 ${item.type==='veg'?'veg-dot':'nonveg-dot'}"></span>
+          <h4 class="font-semibold text-sm text-white truncate">${item.name}</h4>
+          ${item.best?'<span class="badge-best text-[9px] font-semibold px-1.5 py-0.5 rounded-full">★ BEST</span>':''}
+        </div>
+        <p class="text-xs text-neutral-500 truncate">${item.desc}</p>
+        <div class="flex items-center gap-2 mt-1 text-[11px] text-neutral-600">
+          <span class="bg-white/5 px-2 py-0.5 rounded">${catLabel}</span>
+          <span>₹${item.sizes[0].price} - ₹${item.sizes[item.sizes.length-1].price}</span>
+          <span>${item.sizes.length} size${item.sizes.length>1?'s':''}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button onclick="openItemForm(${item.id})" class="btn-secondary btn-sm flex items-center gap-1"><span class="iconify text-xs" data-icon="lucide:pencil"></span> Edit</button>
+        <button onclick="deleteItem(${item.id})" class="btn-danger btn-sm flex items-center gap-1"><span class="iconify text-xs" data-icon="lucide:trash-2"></span></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterAdminItems(q) {
+  const items = getItems().filter(i => i.name.toLowerCase().includes(q.toLowerCase()) || i.desc.toLowerCase().includes(q.toLowerCase()));
+  renderAdminItemsList(items);
+}
+
+// ---------- ITEM FORM ----------
+function openItemForm(editId) {
+  editingItemId = editId || null;
+  const items = getItems();
+  const cats = getCats().filter(ct => ct.key !== 'all');
+  const item = editId ? items.find(i => i.id === editId) : null;
+  const isEdit = !!item;
+
+  document.getElementById('itemFormTitle').textContent = isEdit ? 'Edit Item' : 'Add New Item';
+
+  let sizesHTML = '';
+  const sizes = isEdit ? item.sizes : [{label:'',price:''}];
+  sizes.forEach((s, i) => {
+    sizesHTML += `<div class="size-row" data-size-idx="${i}">
+      <input class="form-input text-sm sf-label" placeholder="Size name" value="${s.label}" style="flex:1">
+      <input class="form-input text-sm sf-price" type="number" placeholder="Price" value="${s.price}" style="width:100px">
+      <button onclick="removeSizeRow(this)" class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition flex-shrink-0 ${sizes.length<=1?'opacity-30 pointer-events-none':''}"><span class="iconify text-sm" data-icon="lucide:x"></span></button>
+    </div>`;
+  });
+
+  let imgPreview = isEdit && item.img ? `<img src="${item.img}" class="img-preview mb-2" id="itemImgPreview" onerror="this.style.display='none'">` : '<div id="itemImgPreview"></div>';
+  let imgUrlVal = (isEdit && item.img && !item.img.startsWith('data:')) ? item.img : '';
+
+  document.getElementById('itemFormBody').innerHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div><label class="form-label">Item Name</label><input id="ifName" class="form-input" value="${isEdit?item.name:''}"></div>
+      <div><label class="form-label">Category</label>
+        <select id="ifCat" class="form-input">
+          ${cats.map(ct=>`<option value="${ct.key}" ${isEdit&&item.category===ct.key?'selected':''}>${ct.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="sm:col-span-2"><label class="form-label">Description</label><textarea id="ifDesc" class="form-input resize-none" rows="2">${isEdit?item.desc:''}</textarea></div>
+      <div>
+        <label class="form-label">Type</label>
+        <div class="flex gap-3">
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="ifType" value="veg" ${isEdit&&item.type==='veg'||!isEdit?'checked':''} class="accent-green-500"> <span class="text-sm text-green-400">Veg</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="ifType" value="nonveg" ${isEdit&&item.type==='nonveg'?'checked':''} class="accent-red-500"> <span class="text-sm text-red-400">Non-Veg</span></label>
+        </div>
+      </div>
+      <div>
+        <label class="form-label">Best Seller</label>
+        <div class="toggle-switch ${isEdit&&item.best?'on':''}" id="ifBest" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div>
+      <label class="form-label">Image</label>
+      ${imgPreview}
+      <input id="ifImgUrl" class="form-input text-sm mb-2" placeholder="Paste image URL..." value="${imgUrlVal}">
+      <div class="img-upload-zone" onclick="document.getElementById('ifImgFile').click()">
+        <input type="file" id="ifImgFile" accept="image/*" class="hidden" onchange="handleItemImgUpload(this)">
+        <span class="iconify text-neutral-500 text-2xl mx-auto" data-icon="lucide:upload"></span>
+        <p class="text-xs text-neutral-500 mt-1">Upload image file</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <label class="form-label mb-0">Sizes & Prices</label>
+        <button onclick="addSizeRow()" class="text-xs text-red-400 font-medium hover:text-red-300 transition flex items-center gap-1"><span class="iconify" data-icon="lucide:plus"></span> Add Size</button>
+      </div>
+      <div id="sizesContainer">${sizesHTML}</div>
+    </div>
+
+    <button onclick="saveItem()" class="btn-primary w-full py-3">${isEdit?'Update Item':'Add Item'}</button>`;
+
+  document.getElementById('itemFormModal').classList.add('show');
+}
+
+function closeItemForm() { document.getElementById('itemFormModal').classList.remove('show'); editingItemId = null; }
+
+function addSizeRow() {
+  const cont = document.getElementById('sizesContainer');
+  const idx = cont.children.length;
+  const div = document.createElement('div');
+  div.className = 'size-row';
+  div.dataset.sizeIdx = idx;
+  div.innerHTML = `<input class="form-input text-sm sf-label" placeholder="Size name" style="flex:1">
+    <input class="form-input text-sm sf-price" type="number" placeholder="Price" style="width:100px">
+    <button onclick="removeSizeRow(this)" class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition flex-shrink-0"><span class="iconify text-sm" data-icon="lucide:x"></span></button>`;
+  cont.appendChild(div);
+  updateSizeRemoveButtons();
+}
+
+function removeSizeRow(btn) {
+  const cont = document.getElementById('sizesContainer');
+  if (cont.children.length <= 1) return;
+  btn.closest('.size-row').remove();
+  updateSizeRemoveButtons();
+}
+
+function updateSizeRemoveButtons() {
+  const cont = document.getElementById('sizesContainer');
+  const rows = cont.querySelectorAll('.size-row');
+  rows.forEach(r => {
+    const btn = r.querySelector('button');
+    if (rows.length <= 1) { btn.classList.add('opacity-30','pointer-events-none'); }
+    else { btn.classList.remove('opacity-30','pointer-events-none'); }
+  });
+}
+
+function handleItemImgUpload(input) {
+  const file = input.files[0]; if (!file) return;
+  resizeImage(file, 500, function(dataUrl) {
+    const prev = document.getElementById('itemImgPreview');
+    if (prev.tagName === 'IMG') { prev.src = dataUrl; prev.style.display = ''; }
+    else { prev.outerHTML = `<img src="${dataUrl}" class="img-preview mb-2" id="itemImgPreview">`; }
+    document.getElementById('ifImgUrl').value = '';
+    document.getElementById('ifImgUrl').dataset.base64 = dataUrl;
+  });
+}
+
+function saveItem() {
+  const name = document.getElementById('ifName').value.trim();
+  const cat = document.getElementById('ifCat').value;
+  const desc = document.getElementById('ifDesc').value.trim();
+  const type = document.querySelector('input[name="ifType"]:checked').value;
+  const best = document.getElementById('ifBest').classList.contains('on');
+  const imgUrlEl = document.getElementById('ifImgUrl');
+  let img = imgUrlEl.dataset.base64 || imgUrlEl.value.trim();
+  if (!img) img = `https://picsum.photos/seed/${name.replace(/\s/g,'').toLowerCase()}/400/300.jpg`;
+
+  // Collect sizes
+  const sizeRows = document.querySelectorAll('#sizesContainer .size-row');
+  const sizes = [];
+  let sizesValid = true;
+  sizeRows.forEach(row => {
+    const label = row.querySelector('.sf-label').value.trim();
+    const price = parseInt(row.querySelector('.sf-price').value);
+    if (!label || isNaN(price) || price <= 0) { sizesValid = false; return; }
+    sizes.push({label, price});
+  });
+
+  if (!name) { showToast('Item name is required','error'); return; }
+  if (!desc) { showToast('Description is required','error'); return; }
+  if (!sizesValid || sizes.length === 0) { showToast('All sizes need valid name & price','error'); return; }
+
+  const items = getItems();
+
+  if (editingItemId) {
+    const idx = items.findIndex(i => i.id === editingItemId);
+    if (idx > -1) {
+      items[idx] = {...items[idx], name, category: cat, desc, type, best, img, sizes};
+    }
+    showToast('Item updated!');
+  } else {
+    const maxId = items.reduce((m,i) => Math.max(m,i.id), 0);
+    items.push({id: maxId+1, name, category: cat, desc, type, best, img, sizes});
+    showToast('Item added!');
+  }
+
+  setItems(items);
+  closeItemForm();
+  showAdminTab('items');
+}
+
+function deleteItem(id) {
+  const items = getItems();
+  const item = items.find(i => i.id === id);
+  showConfirm(`Delete "${item ? item.name : 'this item'}"? This cannot be undone.`, function() {
+    const arr = getItems().filter(i => i.id !== id);
+    setItems(arr);
+    delete selectedSizes[id];
+    showAdminTab('items');
+    showToast('Item deleted!');
+  });
+}
+
+// ---------- CATEGORIES TAB ----------
+function renderCatsTab(c) {
+  const cats = getCats();
+  c.innerHTML = `
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">Categories</h2>
+        <p class="text-sm text-neutral-500 mt-1">${cats.length} categories</p>
+      </div>
+      <button onclick="openCatForm()" class="btn-primary flex items-center gap-2"><span class="iconify" data-icon="lucide:plus"></span> Add Category</button>
+    </div>
+    <div class="space-y-3">
+      ${cats.map(cat => {
+        const count = cat.key === 'all' ? getItems().length : getItems().filter(i => i.category === cat.key).length;
+        return `<div class="admin-card flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+            <span class="iconify text-xl text-neutral-400" data-icon="${cat.icon}"></span>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-sm text-white">${cat.label}</h4>
+            <p class="text-xs text-neutral-500">Key: ${cat.key} · ${count} items</p>
+          </div>
+          <div class="flex items-center gap-2">
+            ${cat.key !== 'all' ? `
+              <button onclick="openCatForm('${cat.key}')" class="btn-secondary btn-sm"><span class="iconify text-xs" data-icon="lucide:pencil"></span></button>
+              <button onclick="deleteCat('${cat.key}')" class="btn-danger btn-sm"><span class="iconify text-xs" data-icon="lucide:trash-2"></span></button>
+            ` : '<span class="text-[10px] text-neutral-600 bg-white/5 px-2 py-1 rounded">Default</span>'}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function openCatForm(editKey) {
+  editingCatKey = editKey || null;
+  const cats = getCats();
+  const cat = editKey ? cats.find(c => c.key === editKey) : null;
+  const isEdit = !!cat;
+
+  document.getElementById('catFormTitle').textContent = isEdit ? 'Edit Category' : 'Add Category';
+  document.getElementById('catFormBody').innerHTML = `
+    <div><label class="form-label">Category Key (english, no spaces)</label><input id="cfKey" class="form-input" placeholder="e.g. pasta" value="${isEdit?cat.key:''}" ${isEdit?'readonly style="opacity:0.5"':''}></div>
+    <div><label class="form-label">Display Label</label><input id="cfLabel" class="form-input" placeholder="e.g. Pasta" value="${isEdit?cat.label:''}"></div>
+    <div><label class="form-label">Icon Name (Iconify)</label><input id="cfIcon" class="form-input" placeholder="e.g. lucide:pizza" value="${isEdit?cat.icon:'lucide:utensils-crossed'}">
+      <div class="mt-2 flex items-center gap-2 text-neutral-500"><span>Preview:</span><span class="iconify text-xl" data-icon="${isEdit?cat.icon:'lucide:utensils-crossed'}" id="cfIconPreview"></span></div>
+    </div>
+    <button onclick="saveCat()" class="btn-primary w-full py-3">${isEdit?'Update Category':'Add Category'}</button>`;
+
+  // Live icon preview
+  document.getElementById('cfIcon').addEventListener('input', function() {
+    document.getElementById('cfIconPreview').setAttribute('data-icon', this.value.trim() || 'lucide:utensils-crossed');
+  });
+
+  document.getElementById('catFormModal').classList.add('show');
+}
+
+function closeCatForm() { document.getElementById('catFormModal').classList.remove('show'); editingCatKey = null; }
+
+function saveCat() {
+  const key = document.getElementById('cfKey').value.trim().toLowerCase().replace(/\s+/g,'');
+  const label = document.getElementById('cfLabel').value.trim();
+  const icon = document.getElementById('cfIcon').value.trim() || 'lucide:utensils-crossed';
+
+  if (!key || !label) { showToast('Key and Label are required','error'); return; }
+
+  const cats = getCats();
+
+  if (editingCatKey) {
+    const idx = cats.findIndex(c => c.key === editingCatKey);
+    if (idx > -1) { cats[idx].label = label; cats[idx].icon = icon; }
+    // Also update items category if key changed (but we don't allow key change)
+    showToast('Category updated!');
+  } else {
+    if (cats.find(c => c.key === key)) { showToast('Category key already exists','error'); return; }
+    cats.push({key, label, icon});
+    showToast('Category added!');
+  }
+
+  setCats(cats);
+  closeCatForm();
+  showAdminTab('categories');
+}
+
+function deleteCat(key) {
+  const itemsInCat = getItems().filter(i => i.category === key).length;
+  if (itemsInCat > 0) {
+    showToast(`Cannot delete: ${itemsInCat} items in this category. Move them first.`,'error');
+    return;
+  }
+  showConfirm(`Delete category "${key}"?`, function() {
+    const cats = getCats().filter(c => c.key !== key);
+    setCats(cats);
+    showAdminTab('categories');
+    showToast('Category deleted!');
+  });
+}
+
+// ---------- SETTINGS TAB ----------
+function renderSettingsTab(c) {
+  const creds = getCreds();
+  c.innerHTML = `
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold tracking-tight">Settings</h2>
+      <p class="text-sm text-neutral-500 mt-1">Manage admin credentials & data</p>
+    </div>
+    <div class="admin-card space-y-5 mb-6">
+      <h3 class="text-base font-semibold flex items-center gap-2"><span class="iconify text-red-400" data-icon="lucide:shield"></span> Change Admin Password</h3>
+      <div><label class="form-label">Current Password</label><input type="password" id="setCurPass" class="form-input" placeholder="Enter current password"></div>
+      <div><label class="form-label">New Password</label><input type="password" id="setNewPass" class="form-input" placeholder="Enter new password"></div>
+      <div><label class="form-label">Confirm New Password</label><input type="password" id="setConfPass" class="form-input" placeholder="Confirm new password"></div>
+      <button onclick="changePassword()" class="btn-primary">Update Password</button>
+    </div>
+    <div class="admin-card space-y-5 mb-6">
+      <h3 class="text-base font-semibold flex items-center gap-2"><span class="iconify text-yellow-400" data-icon="lucide:user"></span> Change Username</h3>
+      <div><label class="form-label">New Username</label><input id="setNewUser" class="form-input" value="${creds.user}"></div>
+      <button onclick="changeUsername()" class="btn-primary">Update Username</button>
+    </div>
+    <div class="admin-card space-y-4">
+      <h3 class="text-base font-semibold flex items-center gap-2"><span class="iconify text-red-400" data-icon="lucide:database"></span> Data Management</h3>
+      <p class="text-xs text-neutral-500">All data is stored in your browser's localStorage.</p>
+      <div class="flex flex-wrap gap-3">
+        <button onclick="exportData()" class="btn-secondary flex items-center gap-2"><span class="iconify text-xs" data-icon="lucide:download"></span> Export Data</button>
+        <button onclick="document.getElementById('importFile').click()" class="btn-secondary flex items-center gap-2"><span class="iconify text-xs" data-icon="lucide:upload"></span> Import Data</button>
+        <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(this)">
+        <button onclick="resetAllData()" class="btn-danger flex items-center gap-2"><span class="iconify text-xs" data-icon="lucide:rotate-ccw"></span> Reset to Default</button>
+      </div>
+    </div>`;
+}
+
+function changePassword() {
+  const cur = document.getElementById('setCurPass').value;
+  const newP = document.getElementById('setNewPass').value;
+  const conf = document.getElementById('setConfPass').value;
+  const creds = getCreds();
+
+  if (cur !== creds.pass) { showToast('Current password is wrong','error'); return; }
+  if (newP.length < 4) { showToast('New password must be at least 4 characters','error'); return; }
+  if (newP !== conf) { showToast('Passwords do not match','error'); return; }
+
+  creds.pass = newP;
+  setCreds(creds);
+  document.getElementById('setCurPass').value = '';
+  document.getElementById('setNewPass').value = '';
+  document.getElementById('setConfPass').value = '';
+  showToast('Password changed!');
+}
+
+function changeUsername() {
+  const newUser = document.getElementById('setNewUser').value.trim();
+  if (!newUser) { showToast('Username cannot be empty','error'); return; }
+  const creds = getCreds();
+  creds.user = newUser;
+  setCreds(creds);
+  showToast('Username updated!');
+}
+
+function exportData() {
+  const data = {
+    store: getStore(),
+    items: getItems(),
+    cats: getCats(),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `love-pizza-cafe-backup-${Date.now()}.json`;
+  a.click();
+  showToast('Data exported!');
+}
+
+function importData(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.store) setStore(data.store);
+      if (data.items) setItems(data.items);
+      if (data.cats) setCats(data.cats);
+      showAdminTab('settings');
+      showToast('Data imported successfully!');
+    } catch(err) {
+      showToast('Invalid file format','error');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function resetAllData() {
+  showConfirm('Reset ALL data to defaults? This will delete all your changes.', function() {
+    localStorage.removeItem('lpc_store');
+    localStorage.removeItem('lpc_items');
+    localStorage.removeItem('lpc_cats');
+    localStorage.removeItem('lpc_creds');
+    // Re-seed
+    setItems(DEFAULT_MENU);
+    setCats(DEFAULT_CATEGORIES);
+    setStore(DEFAULT_STORE);
+    setCreds({user:'admin',pass:'lovepizza@123'});
+    selectedSizes = {};
+    showAdminTab('settings');
+    showToast('All data reset to defaults!');
+  });
+}
+
+// =====================================================
+// IMAGE RESIZE UTILITY (to fit localStorage)
+// =====================================================
+function resizeImage(file, maxW, callback) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// =====================================================
+// INIT
+// =====================================================
+renderPublicMenu();
+</script>
+</body>
+</html>
